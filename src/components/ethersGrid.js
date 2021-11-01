@@ -37,9 +37,7 @@ export default class TransactionList extends React.Component {
         const promise = provider.perform('getGasPrice')
         // const promise = provider.fetch('gastracker', param)
         await promise.then(function (result) {
-            debugger
-            const gasPrice = ethers.utils.formatUnits(result, 'wei');
-            debugger
+            const gasPrice = ethers.utils.formatUnits(result, 'ether');
             self.setState({ gasPrice });
         });
 
