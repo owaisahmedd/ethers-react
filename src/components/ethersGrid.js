@@ -10,14 +10,14 @@ export default class TransactionList extends React.Component {
     }
     network = 'homestead'
     apiKey = 'UGKW1H83JWANQKJFZZ7VHH9X37A3W2KNFJ'
-    address = '0xc2bb06b216830Be36c0C7b211cAE3445F597b1Ac'
+    address = '0x0ff80a1708191c0da8aa600fa487f7ac81d7818c'
     async getTransactionList() {
         const self = this;
         const provider = new ethers.providers.EtherscanProvider(self.network, self.apiKey)
         const param = {
             'action': 'txlist',
             'address': self.address,
-            'sort': 'asc',
+            'sort': 'desc',
             'page': '1',
             'offset': '10'
         }
@@ -31,11 +31,7 @@ export default class TransactionList extends React.Component {
     async getGasPrice() {
         const self = this;
         const provider = new ethers.providers.EtherscanProvider(self.network, self.apiKey);
-        const param = {
-            'action': 'gasoracle'
-        }
         const promise = provider.perform('getGasPrice')
-        // const promise = provider.fetch('gastracker', param)
         await promise.then(function (result) {
             const gasPrice = ethers.utils.formatUnits(result, 'ether');
             self.setState({ gasPrice });
@@ -46,7 +42,8 @@ export default class TransactionList extends React.Component {
         const self = this;
         const provider = new ethers.providers.EtherscanProvider(self.network, self.apiKey)
         const param = {
-            'action': 'ethsupply',
+            'action': 'tokensupply',
+            'contractaddress':self.address,
         }
         const promise = provider.fetch('stats', param)
         await promise.then(function (result) {
