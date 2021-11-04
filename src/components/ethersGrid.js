@@ -25,6 +25,8 @@ export default class TransactionList extends React.Component {
         await promise.then(function (result) {
             const transactions = result;
             self.setState({ transactions });
+        }).catch(function (e) {
+            console.log(e);
         });
 
     }
@@ -35,6 +37,8 @@ export default class TransactionList extends React.Component {
         await promise.then(function (result) {
             const gasPrice = ethers.utils.formatUnits(result, 'ether');
             self.setState({ gasPrice });
+        }).catch(function (e) {
+            console.log(e);
         });
 
     }
@@ -43,12 +47,14 @@ export default class TransactionList extends React.Component {
         const provider = new ethers.providers.EtherscanProvider(self.network, self.apiKey)
         const param = {
             'action': 'tokensupply',
-            'contractaddress':self.address,
+            'contractaddress': self.address,
         }
-        const promise = provider.fetch('stats', param)
+        const promise = provider.fetch('stats', param);
         await promise.then(function (result) {
             const totalSupply = result;
             self.setState({ totalSupply });
+        }).catch(function (e) {
+            console.log(e);
         });
 
     }
@@ -57,12 +63,22 @@ export default class TransactionList extends React.Component {
         this.getGasPrice();
         this.getEtherTotalSupply();
     }
+    componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({
+            transactions: [],
+            gasPrice: 0,
+            totalSupply: 0
+        });
+        // You can also log the error to an error reporting service
+        console.log(error);
+    }
     render() {
         return (
-            <>
-                <h1>Gas Price: { this.state.gasPrice }</h1>
-                <h1>Total Supply: { this.state.totalSupply }</h1>
-                <Table striped bordered hover>
+            <div class="table-responsive text-nowrap">
+                <h1>Gas Price: {this.state.gasPrice}</h1>
+                <h1>Total Supply: {this.state.totalSupply}</h1>
+                <Table striped bordered hover class="table table-striped">
                     <thead>
                         <tr>
                             <th>blockHash</th>
@@ -110,7 +126,7 @@ export default class TransactionList extends React.Component {
                         }
                     </tbody>
                 </Table>
-            </>
+            </div>
         )
     }
 }
